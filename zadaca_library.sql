@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS knjige (
     autor VARCHAR(100) NOT NULL,
     isbn VARCHAR(20) UNIQUE NOT NULL,
     zanr_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (zanr_id) REFERENCES zanrovi(id)
+    FOREIGN KEY (zanr_id) REFERENCES zanrovi(id) ON DELETE CASCADE
 );
 
 -- Tablica za fizičke kopije knjiga
@@ -122,15 +122,23 @@ INSERT INTO posudbe (clan_id, kopija_id, datum_posudbe) VALUES (1, 3, '2023-06-0
 -- #### Napraviti Upite na bazi podataka "knjiznica"
 -- 1. Navedite sve članove koji su posudili knjige, zajedno s naslovima knjiga koje su posudili.
 SELECT c.id AS clan_id, c.ime, c.prezime, kn.naslov FROM posudbe p
+CONCAT(clanovi.ime , " " , clanovi.prezime) AS Ime
 JOIN clanovi c ON c.id = p.clan_id
 JOIN kopija ko ON ko.id = p.kopija_id
 JOIN knjige kn ON kn.id = ko.knjiga_id;
 -- WHERE p.datum_povrata IS NULL; /* koji jos nisu vratili */
 
 -- 2. Pronađite članove koji imaju zakašnjele knjige.
-SELECT c.id AS clan_id, c.ime, c.prezime FROM posudbe p
+-- SELECT c.id AS clan_id, c.ime, c.prezime FROM posudbe p
+-- JOIN clanovi c ON c.id = p.clan_id
+-- WHERE p.zakasnina IS NOT NULL;
+
+SELECT c.id AS clan_id, c.ime, c.prezime, p.datum_posudbe, p.datum_povrata FROM posudbe p
 JOIN clanovi c ON c.id = p.clan_id
-WHERE p.zakasnina IS NOT NULL;
+WHERE
+    p.datum_povrata IS NULL AND CURDATE() - p.datum_posudbe > 14
+    OR
+    p.datum_povrata - p.datum_posudbe > 14;
 
 -- 3. Pronađite sve žanrove i broj dostupnih knjiga u svakom žanru.
 SELECT z.naziv, COUNT(ko.id) AS broj_dostupnih_knjiga
