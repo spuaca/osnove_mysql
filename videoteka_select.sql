@@ -121,3 +121,8 @@ SELECT * FROM posudba p
 JOIN clanovi c
 WHERE c.id = p.clan_id
 WHERE COUNT(c.id) BETWEEN 1 AND 60;
+
+-- dohvati sve iz filmova
+SELECT * FROM filmovi LIMIT 3 OFFSET 2;
+
+-- dohvati prosjecnu cijenu filmov s obizorm na ukupnu zalihu filmova
