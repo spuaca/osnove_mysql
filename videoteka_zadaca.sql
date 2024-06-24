@@ -2,7 +2,7 @@
 
 -- - kreirajte novo korisnika u MySQL-u i dajte mu povlastice samo za bazu videoteka
 CREATE USER 'novi'@'localhost' IDENTIFIED BY 'novi';
-GRANT ALL PRIVILEGES ON *.* TO 'novi'@'localhost';
+GRANT ALL PRIVILEGES ON videoteka.* TO 'novi'@'localhost';
 
 -- - Svaki film ima zalihu dostupnih kopija po mediju za koji je dostupan
 CREATE TABLE IF NOT EXISTS kopija (
